@@ -10,26 +10,28 @@ It governs how the vision is executed.
 
 ## 1. Core Principles
 
-Non-negotiable truths that guide all product decisions.
 
 Each principle must include:
 - What it means
-- What it prevents
+- What it prevents or what it enables
 - An example of violation
 
-Example structure:
+Non-negotiable truths that guide all product decisions are:
+
+### Invisibility over additional user actions
+- Users already have enough systems that they need to use.
 
 ### Outcome Over Output
-Work must link to measurable impact.
-Prevents shipping features without defined success criteria.
+- Work must link to measurable impact.
+- Prevents shipping features without defined success criteria.
 
 ### Alignment Before Execution
-Features must connect to strategy and user jobs before implementation.
-Prevents reactive roadmap additions.
+- Features must connect to strategy and user jobs before implementation.
+- Prevents reactive roadmap additions.
 
 ### Small Before Complex
-Prefer narrow, well-defined functionality over broad, configurable systems.
-Prevents feature sprawl.
+- Prefer narrow, well-defined functionality over broad, configurable systems.
+- Prevents feature sprawl.
 
 ---
 
@@ -38,6 +40,7 @@ Prevents feature sprawl.
 Explicit exclusions to prevent scope drift.
 
 - We are not a task management tool.
+- We are not an agile backlog system.
 - We are not a reporting dashboard.
 - We are not a documentation repository.
 - We do not optimize for feature breadth.
