@@ -1,1 +1,3 @@
-/* Placeholder for Task 1 */
+.layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.card { border: 1px solid #ccc; padding: 12px; margin-bottom: 8px; }
+.hidden { display: none; }

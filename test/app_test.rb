@@ -21,4 +21,9 @@ class AppTest < Minitest::Test
     assert json["evaluations"].any?
     assert json["evaluations"].first.key?("agent")
   end
+
+  def test_index_includes_summary_container
+    get "/"
+    assert_includes last_response.body, "id=\"summary\""
+  end
 end
