@@ -1,14 +1,30 @@
 module Evaluators
   class Strategy
-    def call(_feature, _docs)
-      {
-        "agent" => "strategy",
-        "alignment_score" => 3,
-        "confidence_score" => 2,
-        "risk_level" => "Medium",
-        "detected_conflicts" => [],
-        "what_would_make_this_a_5_of_5" => ["Cite a specific strategic pillar."]
-      }
+    include Base
+
+    AGENT_NAME = "strategy".freeze
+    PROMPT_PATH = "product-thinking/01-strategy-evaluator".freeze
+
+    def initialize(client: OpenAIClient.new)
+      @client = client
     end
+
+    def agent_name
+      AGENT_NAME
+    end
+
+    def call(feature, docs)
+      evaluate_with_template(
+        template_path: PROMPT_PATH,
+        replacements: {
+          "feature_proposal" => feature,
+          "strategy_doc" => docs[:strategy]
+        }
+      )
+    end
+
+    private
+
+    attr_reader :client
   end
 end

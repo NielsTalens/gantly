@@ -1,14 +1,30 @@
 module Evaluators
   class UserFlows
-    def call(_feature, _docs)
-      {
-        "agent" => "user_flows",
-        "alignment_score" => 3,
-        "confidence_score" => 2,
-        "risk_level" => "Medium",
-        "detected_conflicts" => [],
-        "what_would_make_this_a_5_of_5" => ["Reduce steps in a primary flow."]
-      }
+    include Base
+
+    AGENT_NAME = "user_flows".freeze
+    PROMPT_PATH = "product-thinking/04-user-flow-evaluator.md".freeze
+
+    def initialize(client: OpenAIClient.new)
+      @client = client
     end
+
+    def agent_name
+      AGENT_NAME
+    end
+
+    def call(feature, docs)
+      evaluate_with_template(
+        template_path: PROMPT_PATH,
+        replacements: {
+          "feature_proposal" => feature,
+          "user_flows_doc" => docs[:user_flows]
+        }
+      )
+    end
+
+    private
+
+    attr_reader :client
   end
 end

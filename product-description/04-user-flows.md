@@ -19,6 +19,7 @@ desc: This document contains all user flows regarding the product. Think of happ
 ---
 
 ## Flow Overview
+- The product owner opens the app and sees the automatically calculated overall alignment score indicator which is displayed at the top of the app. The indicator states the alignment is very good.
 - The product owner opens the feature validator page and inputs the feature idea. 
 - Gareth agents will verify alignment with all product defining documents.
 - Gareth will display the conclusions, the prove and ways to improve the feature if possible.

@@ -1,14 +1,30 @@
 module Evaluators
   class ProductCharter
-    def call(_feature, _docs)
-      {
-        "agent" => "product_description",
-        "alignment_score" => 3,
-        "confidence_score" => 2,
-        "risk_level" => "Medium",
-        "detected_conflicts" => [],
-        "what_would_make_this_a_5_of_5" => ["Reinforce a core product principle."]
-      }
+    include Base
+
+    AGENT_NAME = "product_charter".freeze
+    PROMPT_PATH = "product-thinking/05-product-charter-evaluator.md".freeze
+
+    def initialize(client: OpenAIClient.new)
+      @client = client
     end
+
+    def agent_name
+      AGENT_NAME
+    end
+
+    def call(feature, docs)
+      evaluate_with_template(
+        template_path: PROMPT_PATH,
+        replacements: {
+          "feature_proposal" => feature,
+          "product_charter_doc" => docs[:product_charter]
+        }
+      )
+    end
+
+    private
+
+    attr_reader :client
   end
 end

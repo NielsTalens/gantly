@@ -11,15 +11,18 @@ class AppTest < Minitest::Test
     post "/evaluate", { feature_proposal: "Test feature" }
     assert last_response.ok?
     json = JSON.parse(last_response.body)
-    assert json.key?("summary")
     assert json.key?("evaluations")
+    assert json.key?("errors")
+    assert json.key?("meta")
+    refute json.key?("summary")
   end
 
   def test_evaluate_returns_real_evaluations
     post "/evaluate", { feature_proposal: "Test feature" }
     json = JSON.parse(last_response.body)
-    assert json["evaluations"].any?
-    assert json["evaluations"].first.key?("agent")
+    combined = json["evaluations"] + json["errors"]
+    assert combined.any?
+    assert combined.first.key?("agent")
   end
 
   def test_index_includes_summary_container
@@ -30,16 +33,44 @@ class AppTest < Minitest::Test
   def test_all_evaluators_returned
     post "/evaluate", { feature_proposal: "Test feature" }
     json = JSON.parse(last_response.body)
-    agents = json["evaluations"].map { |e| e["agent"] }
+    agents = (json["evaluations"] + json["errors"]).map { |e| e["agent"] }
+    assert_includes agents, "strategy"
     assert_includes agents, "vision"
     assert_includes agents, "jtbd"
     assert_includes agents, "user_flows"
-    assert_includes agents, "product_description"
+    assert_includes agents, "product_charter"
     assert_includes agents, "feedback"
+  end
+
+  def test_evaluate_returns_meta_counts
+    post "/evaluate", { feature_proposal: "Test feature" }
+    json = JSON.parse(last_response.body)
+    meta = json["meta"]
+    assert_equal 6, meta["total"]
+    assert_equal meta["total"], meta["succeeded"] + meta["failed"]
+  end
+
+  def test_evaluate_returns_partial_results_when_one_evaluator_fails
+    original_method = Evaluators::Vision.instance_method(:call)
+    Evaluators::Vision.send(:define_method, :call) { |_feature, _docs| raise "boom" }
+
+    post "/evaluate", { feature_proposal: "Test feature" }
+    json = JSON.parse(last_response.body)
+
+    vision_error = json["errors"].find { |error| error["agent"] == "vision" }
+    assert vision_error
+    assert_equal "evaluator_failed", vision_error["error_code"]
+  ensure
+    Evaluators::Vision.send(:define_method, :call, original_method)
   end
 
   def test_index_has_two_panel_layout
     get "/"
     assert_includes last_response.body, "class=\"layout\""
+  end
+
+  def test_index_includes_loader_container
+    get "/"
+    assert_includes last_response.body, "id=\"loading\""
   end
 end
