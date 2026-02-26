@@ -19,11 +19,14 @@ Each principle must include:
 Non-negotiable truths that guide all product decisions are:
 
 ### Invisibility over additional user actions
-- Users already have enough systems that they need to use.
+- Users already have enough systems that they need to use. This product must be invisible where possible.
+- Prevent additional cognitive load.
+- A violation would be to always reason from an ui point of view. 
 
 ### Outcome Over Output
 - Work must link to measurable impact.
 - Prevents shipping features without defined success criteria.
+- Violation: features/stories without links to any business goal.
 
 ### Alignment Before Execution
 - Features must connect to strategy and user jobs before implementation.
