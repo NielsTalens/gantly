@@ -37,4 +37,9 @@ class AppTest < Minitest::Test
     assert_includes agents, "product_description"
     assert_includes agents, "feedback"
   end
+
+  def test_index_has_two_panel_layout
+    get "/"
+    assert_includes last_response.body, "class=\"layout\""
+  end
 end
