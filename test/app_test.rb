@@ -104,7 +104,7 @@ class AppTest < Minitest::Test
     before_files = Dir.glob(File.join(output_dir, "project-*.md"))
     created_files = []
 
-    post "/evaluate", { feature_proposal: "Save me for validation" }
+    post "/evaluate", { feature_proposal: "Save me for validation", project: "crm" }
 
     after_files = Dir.glob(File.join(output_dir, "project-*.md"))
     created_files = after_files - before_files
