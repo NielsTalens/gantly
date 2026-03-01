@@ -4,7 +4,8 @@ desc: gather all feedback regarding the product. It can be user feedback, metric
 ---
 
 ## 02-02-2026
-User: potential buyer
+User: potential buyer.
+
 They said that it was very hard for them to choose what to buy.
 The amount of furniture showed was very large and not well organised.
 They missed some way of guidance.
