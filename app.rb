@@ -11,6 +11,14 @@ require_relative "lib/evaluators/product_charter"
 require_relative "lib/evaluators/feedback"
 
 PROJECTS_ROOT = File.expand_path("projects", __dir__)
+DOC_FILES = {
+  strategy: "01-strategy.md",
+  vision: "02-product-vision.md",
+  jtbd: "03-jtbd.md",
+  user_flows: "04-user-flows.md",
+  product_charter: "05-product-charter.md",
+  feedback: "06-feedback.md"
+}.freeze
 
 helpers do
   def project_names
@@ -35,18 +43,20 @@ post "/evaluate" do
 
   halt 400, { error: "project parameter is required" }.to_json if project.empty?
 
+  project_path = File.join(PROJECTS_ROOT, project)
+  halt 400, { error: "Unknown project: #{project}" }.to_json unless Dir.exist?(project_path)
+
+  md_files = Dir.glob(File.join(project_path, "*.md"))
+  halt 400, { error: "No .md files found for project #{project}" }.to_json if md_files.empty?
+
   read_doc = lambda do |path, label|
     File.exist?(path) ? File.read(path) : "No #{label} document provided."
   end
 
-  docs = {
-    strategy: read_doc.call("product-description/01-strategy.md", "strategy"),
-    vision: read_doc.call("product-description/02-product-vision.md", "vision"),
-    jtbd: read_doc.call("product-description/03-jtbd.md", "jtbd"),
-    user_flows: read_doc.call("product-description/04-user-flows.md", "user flows"),
-    product_charter: read_doc.call("product-description/05-product-charter.md", "product charter"),
-    feedback: read_doc.call("product-description/06-feedback.md", "feedback")
-  }
+  docs = DOC_FILES.transform_values do |filename|
+    label = filename.sub(/\A\d+-/, "").sub(/\.md\z/, "").tr("-", " ")
+    read_doc.call(File.join(project_path, filename), label)
+  end
   evaluators = [
     Evaluators::Strategy.new,
     Evaluators::Vision.new,

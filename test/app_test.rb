@@ -43,6 +43,18 @@ class AppTest < Minitest::Test
     assert_includes last_response.body, "project parameter is required"
   end
 
+  def test_evaluate_rejects_unknown_project
+    post "/evaluate", { feature_proposal: "Test feature", project: "does-not-exist" }
+    assert_equal 400, last_response.status
+    assert_includes last_response.body, "Unknown project"
+  end
+
+  def test_evaluate_rejects_project_without_md
+    post "/evaluate", { feature_proposal: "Test feature", project: "empty_project" }
+    assert_equal 400, last_response.status
+    assert_includes last_response.body, "No .md files found"
+  end
+
   def test_all_evaluators_returned
     post "/evaluate", { feature_proposal: "Test feature", project: "crm" }
     json = JSON.parse(last_response.body)
