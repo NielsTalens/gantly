@@ -31,6 +31,9 @@ end
 post "/evaluate" do
   content_type :json
   feature = params["feature_proposal"].to_s
+  project = params["project"].to_s.strip
+
+  halt 400, { error: "project parameter is required" }.to_json if project.empty?
 
   read_doc = lambda do |path, label|
     File.exist?(path) ? File.read(path) : "No #{label} document provided."

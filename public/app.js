@@ -1,5 +1,8 @@
 const evaluateButton = document.getElementById("evaluate");
 const loading = document.getElementById("loading");
+const tagContainer = document.querySelector("[data-project-tags]");
+const projectTags = tagContainer ? Array.from(tagContainer.querySelectorAll(".project-tag")) : [];
+let selectedProject = projectTags.find((tag) => tag.classList.contains("active"))?.dataset.project || "";
 const AGENT_LABELS = {
   strategy: "Strategy",
   vision: "Product Vision",
@@ -71,18 +74,35 @@ function renderEvaluationDetails(ev) {
   `;
 }
 
+projectTags.forEach((tag) => {
+  tag.addEventListener("click", () => {
+    projectTags.forEach((btn) => btn.classList.remove("active"));
+    tag.classList.add("active");
+    selectedProject = tag.dataset.project || "";
+  });
+});
+
 if (evaluateButton) {
+  evaluateButton.disabled = projectTags.length === 0;
   evaluateButton.addEventListener("click", async () => {
     evaluateButton.disabled = true;
     evaluateButton.textContent = "Evaluating...";
     if (loading) loading.classList.remove("hidden");
 
     try {
+      if (!selectedProject) {
+        evaluateButton.disabled = false;
+        evaluateButton.textContent = "Evaluate";
+        if (loading) loading.classList.add("hidden");
+        alert("Select a project first.");
+        return;
+      }
+
       const feature = document.getElementById("feature-input").value;
       const res = await fetch("/evaluate", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ feature_proposal: feature })
+        body: new URLSearchParams({ feature_proposal: feature, project: selectedProject })
       });
       const data = await res.json();
       const summary = document.getElementById("summary");
