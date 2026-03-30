@@ -7,8 +7,14 @@ const projectTags = tagContainer ? Array.from(tagContainer.querySelectorAll(".pr
 const viewTabsContainer = document.querySelector("[data-view-tabs]");
 const viewTabs = viewTabsContainer ? Array.from(viewTabsContainer.querySelectorAll(".view-tab")) : [];
 const viewPanels = Array.from(document.querySelectorAll("[data-view-panel]"));
+const summary = document.getElementById("summary");
+const coherenceSummary = document.getElementById("coherence-summary");
+const featureCards = document.getElementById("cards");
+const coherenceCards = document.getElementById("coherence-cards");
 let selectedProject = projectTags.find((tag) => tag.classList.contains("active"))?.dataset.project || "";
 let activeView = viewTabs.find((tab) => tab.classList.contains("active"))?.dataset.view || "feature";
+const defaultFeatureSummary = summary?.textContent || "No evaluation yet.";
+const defaultCoherenceSummary = coherenceSummary?.textContent || "No alignment guard run yet.";
 const AGENT_LABELS = {
   strategy: "Strategy",
   vision: "Product Vision",
@@ -40,6 +46,16 @@ function setActiveView(view) {
   viewPanels.forEach((panel) => {
     panel.classList.toggle("hidden", panel.dataset.viewPanel !== view);
   });
+}
+
+function clearFeatureResults() {
+  if (summary) summary.textContent = defaultFeatureSummary;
+  if (featureCards) featureCards.innerHTML = "";
+}
+
+function clearCoherenceResults() {
+  if (coherenceSummary) coherenceSummary.textContent = defaultCoherenceSummary;
+  if (coherenceCards) coherenceCards.innerHTML = "";
 }
 
 function renderEvaluationDetails(ev) {
@@ -191,6 +207,9 @@ if (evaluateButton) {
         return;
       }
 
+      clearCoherenceResults();
+      setActiveView("feature");
+
       const feature = document.getElementById("feature-input").value;
       const res = await fetch("/evaluate", {
         method: "POST",
@@ -198,12 +217,10 @@ if (evaluateButton) {
         body: new URLSearchParams({ feature_proposal: feature, project })
       });
       const data = await res.json();
-      const summary = document.getElementById("summary");
       const meta = data.meta || { total: 0, succeeded: 0, failed: 0 };
       summary.textContent = `Completed ${meta.succeeded}/${meta.total} evaluator runs (${meta.failed} failed).`;
 
-      const cards = document.getElementById("cards");
-      cards.innerHTML = "";
+      featureCards.innerHTML = "";
       (data.evaluations || []).forEach((ev) => {
         const card = document.createElement("div");
         card.className = "card";
@@ -225,7 +242,7 @@ if (evaluateButton) {
         card.querySelector(".toggle-raw").addEventListener("click", () => {
           card.querySelector(".raw-json").classList.toggle("hidden");
         });
-        cards.appendChild(card);
+        featureCards.appendChild(card);
       });
 
       (data.errors || []).forEach((error) => {
@@ -238,7 +255,7 @@ if (evaluateButton) {
           </div>
           <pre>${error.message}</pre>
         `;
-        cards.appendChild(card);
+        featureCards.appendChild(card);
       });
     } finally {
       evaluateButton.disabled = false;
@@ -266,23 +283,23 @@ if (coherenceButton) {
         return;
       }
 
+      clearFeatureResults();
+      setActiveView("coherence");
+
       const res = await fetch("/coherence", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ project })
       });
       const data = await res.json();
-      const summary = document.getElementById("coherence-summary");
-      const cards = document.getElementById("coherence-cards");
-
       if (!res.ok) {
-        summary.textContent = data.message || "Alignment guard failed.";
-        cards.innerHTML = "";
+        coherenceSummary.textContent = data.message || "Alignment guard failed.";
+        coherenceCards.innerHTML = "";
         return;
       }
 
-      summary.innerHTML = renderCoherenceSummary(data.summary || {});
-      cards.innerHTML = "";
+      coherenceSummary.innerHTML = renderCoherenceSummary(data.summary || {});
+      coherenceCards.innerHTML = "";
 
       (data.pairs || []).forEach((pair) => {
         const card = document.createElement("div");
@@ -305,7 +322,7 @@ if (coherenceButton) {
         card.querySelector(".toggle-raw").addEventListener("click", () => {
           card.querySelector(".raw-json").classList.toggle("hidden");
         });
-        cards.appendChild(card);
+        coherenceCards.appendChild(card);
       });
     } finally {
       coherenceButton.disabled = false;

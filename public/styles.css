@@ -99,8 +99,8 @@ body {
 }
 
 .view-tab-coherence {
-  background: #e7a067;
-  border-color: rgba(231, 160, 103, 0.7);
+  background: #FF8000;
+  border-color: rgba(255, 128, 0, 0.7);
   color: #0b1f40;
 }
 
@@ -114,7 +114,7 @@ body {
 }
 
 .view-tab-coherence.active {
-  box-shadow: 0 0 0 3px rgba(231, 160, 103, 0.2);
+  box-shadow: 0 0 0 3px rgba(255, 128, 0, 0.2);
   opacity: 1;
 }
 
@@ -167,7 +167,7 @@ body {
   padding: 10px 18px;
   border-radius: 999px;
   border: 1px solid rgba(127, 163, 217, 0.45);
-  background: #FF8000;
+  background: var(--panel-2);
   color: var(--text);
   font-weight: 600;
   letter-spacing: 0.2px;
@@ -176,9 +176,9 @@ body {
 }
 
 .primary-button:hover {
-  border-color: rgba(127, 163, 217, 0.45);
-  background: #FF8000;
-  transform: none;
+  border-color: rgba(127, 163, 217, 0.8);
+  background: #132f5f;
+  transform: translateY(-1px);
 }
 
 .primary-button:active {
