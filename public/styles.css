@@ -21,6 +21,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
+  font-size: 17px;
   line-height: 1.55;
 }
 
@@ -46,8 +47,9 @@ body {
   background: var(--panel-2);
   color: var(--text);
   padding: 6px 14px;
-  border-radius: 999px;
+  border-radius: 10px;
   cursor: pointer;
+  font-size: 1.02rem;
   font-weight: 600;
   letter-spacing: 0.2px;
   transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
@@ -76,9 +78,10 @@ body {
 
 .view-tab {
   padding: 10px 18px;
-  border-radius: 999px;
+  border-radius: 10px;
   border: 1px solid transparent;
   cursor: pointer;
+  font-size: 1.05rem;
   font-weight: 600;
   letter-spacing: 0.2px;
   transition: border-color 150ms ease, background 150ms ease, color 150ms ease, transform 150ms ease, opacity 150ms ease;
@@ -95,13 +98,13 @@ body {
 .view-tab-feature {
   background: #5fce7a;
   border-color: rgba(95, 206, 122, 0.7);
-  color: #0b1f40;
+  color: #fff;
 }
 
 .view-tab-coherence {
   background: #FF8000;
   border-color: rgba(255, 128, 0, 0.7);
-  color: #0b1f40;
+  color: #fff;
 }
 
 .view-tab:not(.active) {
@@ -165,10 +168,11 @@ body {
 .primary-button {
   margin-top: 18px;
   padding: 10px 18px;
-  border-radius: 999px;
+  border-radius: 10px;
   border: 1px solid rgba(127, 163, 217, 0.45);
   background: var(--panel-2);
   color: var(--text);
+  font-size: 1.05rem;
   font-weight: 600;
   letter-spacing: 0.2px;
   cursor: pointer;
