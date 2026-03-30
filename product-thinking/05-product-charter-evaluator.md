@@ -9,7 +9,7 @@ FEATURE_PROPOSAL:
 {feature_proposal}
 >>>
 
-PRODUCT_DESCRIPTION_DOC (05-product-charter.md):
+PRODUCT_CHARTER_DOC (05-product-charter.md):
 <<<
 {product_charter_doc}
 >>>
@@ -29,7 +29,7 @@ Assess:
 
 OUTPUT JSON schema:
 {
-  "agent": "product_description",
+  "agent": "product_charter",
   "alignment_score": 1-5,
   "confidence_score": 1-5,
   "risk_level": "Low|Medium|High",

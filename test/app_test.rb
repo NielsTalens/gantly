@@ -1,6 +1,11 @@
 require "test_helper"
 
 class AppTest < Minitest::Test
+  def test_strategy_prompt_path_exists
+    assert File.exist?(Evaluators::Strategy::PROMPT_PATH),
+           "Expected strategy prompt path to exist: #{Evaluators::Strategy::PROMPT_PATH}"
+  end
+
   def test_root_renders
     get "/"
     assert last_response.ok?

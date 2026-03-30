@@ -3,7 +3,7 @@ module Evaluators
     include Base
 
     AGENT_NAME = "strategy".freeze
-    PROMPT_PATH = "product-thinking/01-strategy-evaluator".freeze
+    PROMPT_PATH = "product-thinking/01-strategy-evaluator.md".freeze
 
     def initialize(client: OpenAIClient.new)
       @client = client
