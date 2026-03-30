@@ -49,6 +49,13 @@ class AppTest < Minitest::Test
     assert_includes last_response.body, "Feature Proposal"
   end
 
+  def test_root_renders_alignment_guard_tab
+    get "/"
+    assert last_response.ok?
+    assert_includes last_response.body, "Alignment Guard"
+    assert_includes last_response.body, "id=\"run-coherence\""
+  end
+
   def test_evaluate_returns_json
     post "/evaluate", { feature_proposal: "Test feature", project: "crm" }
     assert last_response.ok?
@@ -57,6 +64,78 @@ class AppTest < Minitest::Test
     assert json.key?("errors")
     assert json.key?("meta")
     refute json.key?("summary")
+  end
+
+  def test_coherence_requires_project_param
+    post "/coherence", {}
+
+    assert_equal 400, last_response.status
+    payload = JSON.parse(last_response.body)
+    assert_equal "project parameter is required", payload["message"]
+    assert_equal "bad_request", payload["error_code"]
+  end
+
+  def test_coherence_returns_json
+    original_method = Evaluators::CoherenceValidator.instance_method(:call)
+    Evaluators::CoherenceValidator.send(:define_method, :call) do |_docs|
+      {
+        "pairs" => [
+          {
+            "id" => "strategy_vision",
+            "label" => "Strategy <-> Vision",
+            "alignment_score" => 4,
+            "confidence_score" => 4,
+            "structural_risk_level" => "Low",
+            "core_alignment_themes" => ["shared target user"],
+            "detected_contradictions" => [],
+            "missing_links" => [],
+            "minimal_change_to_improve_coherence" => "Clarify metric ownership."
+          }
+        ],
+        "summary" => {
+          "overall_structural_risk" => "Low",
+          "dominant_misalignment_pattern" => "none",
+          "most_leverage_fix" => "None"
+        }
+      }
+    end
+
+    post "/coherence", { project: "crm" }
+
+    assert last_response.ok?
+    payload = JSON.parse(last_response.body)
+    assert_equal 1, payload["pairs"].length
+    assert_equal "Strategy <-> Vision", payload["pairs"].first["label"]
+    assert_equal "Low", payload.dig("summary", "overall_structural_risk")
+  ensure
+    Evaluators::CoherenceValidator.send(:define_method, :call, original_method)
+  end
+
+  def test_coherence_uses_selected_project_docs
+    captured_docs = nil
+    original_method = Evaluators::CoherenceValidator.instance_method(:call)
+    Evaluators::CoherenceValidator.send(:define_method, :call) do |docs|
+      captured_docs = docs
+      {
+        "pairs" => [],
+        "summary" => {
+          "overall_structural_risk" => "Low",
+          "dominant_misalignment_pattern" => "none",
+          "most_leverage_fix" => "None"
+        }
+      }
+    end
+
+    post "/coherence", { project: "crm" }
+
+    assert last_response.ok?
+    assert captured_docs
+    assert_includes captured_docs[:strategy], "CRM"
+    assert_includes captured_docs[:vision], "CRM"
+    assert_includes captured_docs[:jtbd], "sales"
+    assert_includes captured_docs[:product_charter], "CRM"
+  ensure
+    Evaluators::CoherenceValidator.send(:define_method, :call, original_method)
   end
 
   def test_evaluate_returns_real_evaluations

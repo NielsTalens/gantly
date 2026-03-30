@@ -6,31 +6,50 @@
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
-    <div class="project-tags" data-project-tags>
-      <% if @projects.empty? %>
-        <div class="project-warning">No projects found in /home/nelis/Dev/gareth/projects</div>
-      <% else %>
-        <% @projects.each do |project| %>
-          <button type="button" class="project-tag<%= project == @default_project ? " active" : "" %>" data-project="<%= project %>">
-            <%= project %>
-          </button>
+    <div class="page-header">
+      <div class="project-tags" data-project-tags>
+        <% if @projects.empty? %>
+          <div class="project-warning">No projects found in /home/nelis/Dev/gareth/projects</div>
+        <% else %>
+          <% @projects.each do |project| %>
+            <button type="button" class="project-tag<%= project == @default_project ? " active" : "" %>" data-project="<%= project %>">
+              <%= project %>
+            </button>
+          <% end %>
         <% end %>
-      <% end %>
+      </div>
+      <div class="view-tabs" data-view-tabs>
+        <button type="button" class="view-tab view-tab-feature active" data-view="feature">Feature Evaluation</button>
+        <button type="button" class="view-tab view-tab-coherence" data-view="coherence">Alignment Guard</button>
+      </div>
     </div>
     <main class="layout page">
       <section class="left">
-        <h1>Feature Proposal</h1>
-        <p class="input-help">Paste a proposed feature and run an evaluation.</p>
-        <textarea id="feature-input" class="feature-textarea"></textarea>
-        <button type="button" id="evaluate" class="primary-button">Evaluate</button>
-        <div id="loading" class="hidden">Running evaluators...</div>
+        <div data-view-panel="feature">
+          <h1>Feature Proposal</h1>
+          <p class="input-help">Paste a proposed feature and run an evaluation.</p>
+          <textarea id="feature-input" class="feature-textarea"></textarea>
+          <button type="button" id="evaluate" class="primary-button">Evaluate</button>
+          <div id="loading" class="hidden">Running evaluators...</div>
+        </div>
+        <div data-view-panel="coherence" class="hidden">
+          <h1>Alignment Guard</h1>
+          <p class="input-help">Run a coherence check across the selected project's core documents.</p>
+          <button type="button" id="run-coherence" class="primary-button">Run Alignment Guard</button>
+          <div id="coherence-loading" class="hidden">Running alignment guard...</div>
+        </div>
       </section>
       <section class="right">
-        <div class="summary">
+        <div class="summary" data-view-panel="feature">
           <div class="summary-title">Evaluation Summary</div>
           <div id="summary">No evaluation yet.</div>
         </div>
-        <div id="cards"></div>
+        <div class="summary hidden" data-view-panel="coherence">
+          <div class="summary-title">Alignment Guard Summary</div>
+          <div id="coherence-summary">No alignment guard run yet.</div>
+        </div>
+        <div id="cards" data-view-panel="feature"></div>
+        <div id="coherence-cards" class="hidden" data-view-panel="coherence"></div>
       </section>
     </main>
     <script src="/app.js"></script>

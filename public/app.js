@@ -1,8 +1,14 @@
 const evaluateButton = document.getElementById("evaluate");
+const coherenceButton = document.getElementById("run-coherence");
 const loading = document.getElementById("loading");
+const coherenceLoading = document.getElementById("coherence-loading");
 const tagContainer = document.querySelector("[data-project-tags]");
 const projectTags = tagContainer ? Array.from(tagContainer.querySelectorAll(".project-tag")) : [];
+const viewTabsContainer = document.querySelector("[data-view-tabs]");
+const viewTabs = viewTabsContainer ? Array.from(viewTabsContainer.querySelectorAll(".view-tab")) : [];
+const viewPanels = Array.from(document.querySelectorAll("[data-view-panel]"));
 let selectedProject = projectTags.find((tag) => tag.classList.contains("active"))?.dataset.project || "";
+let activeView = viewTabs.find((tab) => tab.classList.contains("active"))?.dataset.view || "feature";
 const AGENT_LABELS = {
   strategy: "Strategy",
   vision: "Product Vision",
@@ -24,6 +30,16 @@ function normalizedSeverity(value) {
   const severity = String(value || "Medium");
   if (severity === "Low" || severity === "Medium" || severity === "High") return severity;
   return "Medium";
+}
+
+function setActiveView(view) {
+  activeView = view;
+  viewTabs.forEach((tab) => {
+    tab.classList.toggle("active", tab.dataset.view === view);
+  });
+  viewPanels.forEach((panel) => {
+    panel.classList.toggle("hidden", panel.dataset.viewPanel !== view);
+  });
 }
 
 function renderEvaluationDetails(ev) {
@@ -77,6 +93,67 @@ function renderEvaluationDetails(ev) {
   `;
 }
 
+function renderCoherenceDetails(pair) {
+  const themes = Array.isArray(pair.core_alignment_themes) ? pair.core_alignment_themes : [];
+  const contradictions = Array.isArray(pair.detected_contradictions) ? pair.detected_contradictions : [];
+  const missingLinks = Array.isArray(pair.missing_links) ? pair.missing_links : [];
+
+  const renderList = (items, emptyCopy) =>
+    items.length
+      ? `<ul class="action-list">${items.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul>`
+      : `<p class="empty-copy">${emptyCopy}</p>`;
+
+  return `
+    <div class="details-panel hidden">
+      <div class="details-grid">
+        <div><span class="detail-label">Alignment</span><strong>${escapeHtml(pair.alignment_score)}</strong></div>
+        <div><span class="detail-label">Confidence</span><strong>${escapeHtml(pair.confidence_score)}</strong></div>
+        <div><span class="detail-label">Risk</span><strong>${escapeHtml(pair.structural_risk_level)}</strong></div>
+      </div>
+      <section class="details-section">
+        <h4>Core Alignment Themes</h4>
+        ${renderList(themes, "No strong alignment themes called out.")}
+      </section>
+      <section class="details-section">
+        <h4>Detected Contradictions</h4>
+        ${renderList(contradictions, "No contradictions detected.")}
+      </section>
+      <section class="details-section">
+        <h4>Missing Links</h4>
+        ${renderList(missingLinks, "No missing links called out.")}
+      </section>
+      <section class="details-section">
+        <h4>Minimal Change to Improve Coherence</h4>
+        <p class="empty-copy">${escapeHtml(pair.minimal_change_to_improve_coherence || "No minimal change provided.")}</p>
+      </section>
+    </div>
+    <pre class="raw-json hidden">${escapeHtml(JSON.stringify(pair, null, 2))}</pre>
+  `;
+}
+
+function renderCoherenceSummary(summary) {
+  const crossFindings = summary.cross_document_findings || {};
+  const findingGroups = [
+    ["Target customer mismatches", crossFindings.target_customer_mismatches || []],
+    ["Ambition mismatches", crossFindings.ambition_mismatches || []],
+    ["Scope inflation or dilution risks", crossFindings.scope_inflation_or_dilution_risks || []]
+  ];
+
+  const findingsHtml = findingGroups.map(([label, items]) => {
+    if (!items.length) {
+      return `<section class="details-section"><h4>${escapeHtml(label)}</h4><p class="empty-copy">None noted.</p></section>`;
+    }
+    return `<section class="details-section"><h4>${escapeHtml(label)}</h4><ul class="action-list">${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>`;
+  }).join("");
+
+  return `
+    <div><strong>Overall structural risk:</strong> ${escapeHtml(summary.overall_structural_risk || "Medium")}</div>
+    <div><strong>Dominant misalignment pattern:</strong> ${escapeHtml(summary.dominant_misalignment_pattern || "Not provided.")}</div>
+    <div><strong>Most leverage fix:</strong> ${escapeHtml(summary.most_leverage_fix || "Not provided.")}</div>
+    ${findingsHtml}
+  `;
+}
+
 projectTags.forEach((tag) => {
   tag.addEventListener("click", () => {
     projectTags.forEach((btn) => btn.classList.remove("active"));
@@ -89,6 +166,12 @@ function getSelectedProject() {
   const activeTag = projectTags.find((tag) => tag.classList.contains("active"));
   return activeTag?.dataset.project || selectedProject;
 }
+
+viewTabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    setActiveView(tab.dataset.view || "feature");
+  });
+});
 
 if (evaluateButton) {
   evaluateButton.disabled = projectTags.length === 0;
@@ -164,3 +247,72 @@ if (evaluateButton) {
     }
   });
 }
+
+if (coherenceButton) {
+  coherenceButton.disabled = projectTags.length === 0;
+  coherenceButton.addEventListener("click", async () => {
+    coherenceButton.disabled = true;
+    coherenceButton.textContent = "Running...";
+    if (coherenceLoading) coherenceLoading.classList.remove("hidden");
+
+    try {
+      const project = getSelectedProject();
+
+      if (!project) {
+        coherenceButton.disabled = false;
+        coherenceButton.textContent = "Run Alignment Guard";
+        if (coherenceLoading) coherenceLoading.classList.add("hidden");
+        alert("Select a project first.");
+        return;
+      }
+
+      const res = await fetch("/coherence", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ project })
+      });
+      const data = await res.json();
+      const summary = document.getElementById("coherence-summary");
+      const cards = document.getElementById("coherence-cards");
+
+      if (!res.ok) {
+        summary.textContent = data.message || "Alignment guard failed.";
+        cards.innerHTML = "";
+        return;
+      }
+
+      summary.innerHTML = renderCoherenceSummary(data.summary || {});
+      cards.innerHTML = "";
+
+      (data.pairs || []).forEach((pair) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        const scoreClass = `score-${Math.max(1, Math.min(5, Number(pair.alignment_score) || 1))}`;
+        card.innerHTML = `
+          <div class="card-header">
+            <strong>${escapeHtml(pair.label || pair.id)}</strong>
+            <span class="score-pill ${scoreClass}">Score: ${escapeHtml(pair.alignment_score)}</span>
+          </div>
+          <div class="card-actions">
+            <button class="toggle toggle-details">Details</button>
+            <button class="toggle toggle-raw">Raw JSON</button>
+          </div>
+          ${renderCoherenceDetails(pair)}
+        `;
+        card.querySelector(".toggle-details").addEventListener("click", () => {
+          card.querySelector(".details-panel").classList.toggle("hidden");
+        });
+        card.querySelector(".toggle-raw").addEventListener("click", () => {
+          card.querySelector(".raw-json").classList.toggle("hidden");
+        });
+        cards.appendChild(card);
+      });
+    } finally {
+      coherenceButton.disabled = false;
+      coherenceButton.textContent = "Run Alignment Guard";
+      if (coherenceLoading) coherenceLoading.classList.add("hidden");
+    }
+  });
+}
+
+setActiveView(activeView);
