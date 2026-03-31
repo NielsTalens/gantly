@@ -49,6 +49,23 @@ class AppTest < Minitest::Test
     assert_includes last_response.body, "Feature Proposal"
   end
 
+  def test_root_uses_logo_png_for_brand_and_favicon
+    get "/"
+
+    assert last_response.ok?
+    assert_includes last_response.body, 'rel="icon" href="/logo.png"'
+    assert_includes last_response.body, 'src="/logo.png"'
+    assert_includes last_response.body, 'alt="Gantly logo"'
+  end
+
+  def test_logo_png_is_served_from_root_path
+    get "/logo.png"
+
+    assert last_response.ok?
+    assert_equal "image/png", last_response.headers["Content-Type"]
+    assert_operator last_response.body.bytesize, :>, 0
+  end
+
   def test_root_renders_alignment_guard_tab
     get "/"
     assert last_response.ok?

@@ -25,6 +25,7 @@ COHERENCE_DOC_FILES = {
   jtbd: "03-jtbd.md",
   product_charter: "05-product-charter.md"
 }.freeze
+LOGO_PATH = File.expand_path("logo.png", __dir__)
 
 helpers do
   def project_names
@@ -84,6 +85,11 @@ get "/" do
   @projects = project_names
   @default_project = @projects.first
   erb :index
+end
+
+get "/logo.png" do
+  content_type :png
+  send_file LOGO_PATH
 end
 
 post "/evaluate" do
