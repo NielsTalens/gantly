@@ -24,14 +24,15 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="1.3934011"
-     inkscape:cx="332.28048"
-     inkscape:cy="269.12566"
+     inkscape:cx="332.63932"
+     inkscape:cy="441.36608"
      inkscape:window-width="1696"
      inkscape:window-height="1327"
      inkscape:window-x="26"
      inkscape:window-y="23"
      inkscape:window-maximized="0"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="g24"
+     showguides="true" />
   <defs
      id="defs1" />
   <g
@@ -44,10 +45,10 @@
        id="circle1"
        cx="63.911392"
        cy="59.614826"
-       r="18.797468"
        inkscape:export-filename="logo.png"
        inkscape:export-xdpi="96"
-       inkscape:export-ydpi="96" />
+       inkscape:export-ydpi="96"
+       r="18.797468" />
     <rect
        style="fill:none;stroke:#1186b8;stroke-width:6.27545;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:2.1;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
        id="rect2"
@@ -56,19 +57,19 @@
        x="74.19516"
        y="41.589817" />
     <rect
-       style="fill:none;stroke:#1186b8;stroke-width:6.27545;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;paint-order:markers fill stroke;stroke-opacity:1"
+       style="fill:none;stroke:#1186b8;stroke-width:6.27545;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
        id="rect3"
        width="5.8035169"
        height="0.72455084"
-       x="71.060265"
+       x="52.261837"
        y="84.289825" />
     <rect
-       style="fill:none;stroke:#1186b8;stroke-width:6.5071;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;paint-order:markers fill stroke;stroke-opacity:1"
+       style="fill:none;stroke:#1186b8;stroke-width:6.5071;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
        id="rect4"
        width="9.1719007"
        height="0.49292833"
-       x="66.1017"
-       y="90.649345" />
+       x="58.506374"
+       y="89.32016" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -79,27 +80,68 @@
        id="path1"
        cx="49.840099"
        cy="60.088001"
-       r="18.797468" />
+       r="18.797468"
+       inkscape:export-filename="logo.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
     <rect
-       style="fill:none;stroke:#1186b8;stroke-width:6.27545;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:2.1;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:none;stroke:#1186b8;stroke-width:7.30594;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:2.1;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
        id="rect1"
-       width="5.8035512"
-       height="0.7245487"
-       x="59.642406"
-       y="42.049496" />
+       width="4.7730584"
+       height="1.1940629"
+       x="61.866604"
+       y="42.184978" />
     <rect
-       style="fill:none;stroke:#1186b8;stroke-width:6.27545;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:none;stroke:#1186b8;stroke-width:7.24216;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
        id="rect1-1"
-       width="5.8035169"
-       height="0.72455084"
-       x="56.988972"
-       y="84.763" />
+       width="4.8368106"
+       height="1.1578361"
+       x="40.003082"
+       y="84.486824" />
     <rect
-       style="fill:none;stroke:#1186b8;stroke-width:9.08223;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:none;stroke:#1186b8;stroke-width:9.43269;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
        id="rect1-3"
-       width="9.5966825"
-       height="0.91777378"
-       x="49.155693"
-       y="91.873039" />
+       width="16.746309"
+       height="0.56731415"
+       x="46.482681"
+       y="90.908958" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="g24"
+     inkscape:label="round-corners-round-bottum"
+     transform="translate(-0.75953242,71.585931)">
+    <circle
+       style="fill:none;fill-opacity:1;stroke:#1186b8;stroke-width:8.03769;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       id="circle22"
+       cx="46.749084"
+       cy="62.503597"
+       r="15.011178"
+       inkscape:export-filename="logo.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
+    <circle
+       style="fill:none;fill-opacity:1;stroke:#1186b8;stroke-width:5.85071;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       id="circle22-9"
+       cx="44.970638"
+       cy="94.147858"
+       inkscape:export-filename="logo.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       r="7.2046571" />
+    <rect
+       style="fill:none;stroke:#1186b8;stroke-width:7.30594;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:2.1;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       id="rect22"
+       width="4.7730584"
+       height="1.1940629"
+       x="55.60046"
+       y="46.742172" />
+    <rect
+       style="fill:none;stroke:#1186b8;stroke-width:7.84568;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       id="rect23"
+       width="5.2398815"
+       height="1.2543232"
+       x="35.747646"
+       y="83.269508" />
   </g>
 </svg>

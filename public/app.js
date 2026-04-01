@@ -23,7 +23,7 @@ const VIEW_CONTENT = {
     taskHelp: "Paste a proposed feature and Gantly will score it against the selected product definition."
   },
   coherence: {
-    taskTitle: "Document Alignment",
+    taskTitle: "Fundamentals Alignment",
     taskHelp: "Run a structural coherence check across the selected project's strategy, vision, JTBD, and charter documents."
   }
 };
